@@ -1,289 +1,92 @@
-4. Использование функций. Ваша программа не должна быть линейной 
-"""
+# Задача 38: 
+# Дополнить телефонный справочник возможностью изменения и удаления данных. 
+# Пользователь также может ввести имя или фамилию, и Вы должны реализовать функционал для изменения и удаления данных
 
-# data = open('file.txt', 'a') # здесь указываем режим, в котором будем работать
-# data.writelines() # разделителей не будет
-# data.close()
+# Показывает информацию в файле
+def show_data(filename):
+    print("\nПП | ФИО | Телефон")
+    with open(filename, "r", encoding="utf-8") as data:
+        print(data.read())
+    print("")
 
-# path = 'file.txt'
-# data = open(path, 'r')
-# for line in data:
-# print(line)
-# data.close()
+# Записывает информацию в файл
+def export_data(filename):
+    with open(filename, "r", encoding="utf-8") as data:
+        tel_file = data.read()
+    num = len(tel_file.split("\n"))
+    with open(filename, "a", encoding="utf-8") as data: 
+        fio = input("Введите ФИО: ")
+        phone_number = input("Введите номер телефона: ")
+        data.write(f"{num} | {fio} | {phone_number}\n")
+        print(f"Добавлена запись : {num} | {fio} | {phone_number}\n")
 
-import os
-def selectAllReadPhoneNumber ():
-    phoneBook = readData('C:/1Stud_GB/PythonLessons/L8/phonebook.txt')
-    for i in phoneBook:
-        print (i)
-def selectSomethingReadPhoneNumber ():
-    print ("selectSomething 2")
+# Изменяет информацию из файла
+def edit_data(filename):
+    print("\nПП | ФИО | Телефон")
+    with open(filename, "r", encoding='utf-8') as data:
+        tel_book = data.read()
+    print(tel_book)
+    print("")
+    index_delete_data = int(input("Введите номер строки для редактирования: ")) - 1
+    tel_book_lines = tel_book.split("\n")
+    edit_tel_book_lines = tel_book_lines[index_delete_data]
+    elements = edit_tel_book_lines.split(" | ")
+    fio = input("Введите ФИО: ")
+    phone = input("Введите номер телефона: ")
+    num = elements[0]
+    if len(fio) == 0:
+        fio = elements[1]
+    if len(phone) == 0:
+        phone = elements[2]
+    edited_line = f"{num} | {fio} | {phone}"
+    tel_book_lines[index_delete_data] = edited_line
+    print(f"Запись - {edit_tel_book_lines}, изменена на - {edited_line}\n")
+    with open(filename, "w", encoding='utf-8') as f:
+        f.write("\n".join(tel_book_lines))
 
-source = ('L8/phonebook.txt')
+# Удаляет информацию из файла
+def delete_data(filename):
+    print("\nПП | ФИО | Телефон")
+    with open(filename, "r", encoding="utf-8") as data:
+        tel_book = data.read()
+        print(tel_book)
+    print("")
+    index_delete_data = int(input("Введите номер строки для удаления: ")) - 1
+    tel_book_lines = tel_book.split("\n")
+    del_tel_book_lines = tel_book_lines[index_delete_data]
+    tel_book_lines.pop(index_delete_data)
+    print(f"Удалена запись: {del_tel_book_lines}\n")
+    with open(filename, "w", encoding='utf-8') as data:
+        data.write("\n".join(tel_book_lines))
 
-#READ FILE
-def readData (fileName):
-    with open (fileName) as f:
-        phoneBook = []
-        for line in f:
-            phoneBook.append(line.split(','))
-    return phoneBook
+def main():
+    my_choice = -1
+    file_tel = "tel.txt"
 
-#WRITE FILE
-def writeData (fileName, phoneBook):
-    with open (fileName, 'w') as f:
-        for i in phoneBook:
-            print (i)
-            f.write (','.join(i))
+    # Создает файл если его нет в папке
+    with open(file_tel, "a", encoding="utf-8") as file:
+         file.write("")
 
-        print ("Data added and saved")
-        systemMessage(enteredNum)
-
-# ALL SHOW DATABASE 
-def selectAllReadPhoneNumber ():
-    phoneBook = readData(source)
-    for i in phoneBook:
-        print (i)
-
-# FIND PERSON 
-def selectSomethingReadPhoneNumber ():
-    phoneBook = readData(source)
-    flag = False
-    phoneNumber = str(input("Enter telephone number:"))
-    for i in phoneBook:
-        if (phoneNumber == str(i[4])):
-            print ("ID :", i[0])
-            print ("SURNAME :", i[1])
-            print ("FIRST_NAME :", i[2])
-            print ("SECOND_NAME :", i[3])
-            print ("TELEPHONE_NUMBER:", i[4])
-            print ("")
-            flag = True
-    return flag
-
-# ADD PERSON
-def addPerson ():
-    phoneBook = readData('C:/1Stud_GB/PythonLessons/L8/phonebook.txt')
-    print ("Entered data:")
-    number = str(len(phoneBook) + 1)
-    surname = str(input("Entered surname:"))
-    nameFirst = str(input("Entered first name:"))
-    nameSecond = str(input("Entered second name:"))
-    phoneNumber = str(input("Entered telephone number:"))
-    phoneBook.append([number, surname, nameFirst, nameSecond, phoneNumber])
-    print (phoneBook)
-    writeData('C:/1Stud_GB/PythonLessons/L8/phonebook.txt', phoneBook)
-    phoneBook = readData(source)
-    maxID = 0
-    for i in phoneBook:
-        if (maxID < int(i[0])):
-            maxID = int(i[0])
-    print ("Enter data:")
-    number = str(maxID + 1)
-    surname = str(input("Enter surname:"))
-    nameFirst = str(input("Enter first name:"))
-    nameSecond = str(input("Enter second name:"))
-    phoneNumber = str(input("Enter telephone number:"))
-    n = ' \n'
-    phoneBook.append([number, surname, nameFirst, nameSecond, phoneNumber, n])
-    writeData(source, phoneBook)
-
-#EDIT PERSON
-def editPerson ():
-    phoneBook = readData(source)
-    print ("Edit data:")
-    flag = selectSomethingReadPhoneNumber ()
-    if (flag == True):
-        print ("Do you want to change the details of a person?")
-
-        if (answerUserYesOrNo() == 'Y'): 
-            print ("Enter ID to edit person:") 
-            editID = int(answerUserNumberIndex(phoneBook))
-            for i in phoneBook:
-                if (editID == int(i[0])):
-                    print ("ATTENTION! EDIT PERSON MOD: ON")
-                    print ("ID :", i[0])
-                    print ("SURNAME :", i[1])
-                    print ("FIRST_NAME :", i[2])
-                    print ("SECOND_NAME :", i[3])
-                    print ("TELEPHONE_NUMBER:", i[4])
-
-                    oldSurName = i[1]
-                    oldFirstName = i[2]
-                    oldSecondName = i[3]
-                    oldPhoneNumber = i[4]
-
-                    print ("Edit SURNAME ?")
-                    newSurName = answerUserYesOrNo()
-                    if (newSurName == 'Y'):
-                        newSurName = str(input("Enter surname:"))
-                    else:
-                        newSurName = str(oldSurName)
-
-                    print ("Edit FIRST_NAME ?")
-                    newFirstName = answerUserYesOrNo()
-                    if (newFirstName == 'Y'):
-                        newFirstName = str(input("Enter first name:"))
-                    else:
-                        newFirstName = str(oldFirstName)
-
-                    print ("Edit SECOND_NAME ?")
-                    newSecondName = answerUserYesOrNo()
-                    if (newSecondName == 'Y'):
-                        newSecondName = str(input("Enter second name:"))
-                    else:
-                        newSecondName = str(oldSecondName)
-
-                    print ("Edit TELEPHONE_NUMBER ?")
-                    newPhoneNumber = answerUserYesOrNo()
-                    if (newPhoneNumber == 'Y'):
-                        newPhoneNumber = str(input("Enter telephone number:"))
-                    else:
-                        newPhoneNumber = str(oldPhoneNumber)
-
-                    print ("ID              :", editID)
-                    print ("SURNAME         :", oldSurName, "==>", newSurName)
-                    print ("FIRST_NAME      :", oldFirstName, "==>", newFirstName)
-                    print ("SECOND_NAME     :", oldSecondName, "==>", newSecondName)
-                    print ("TELEPHONE_NUMBER:", oldPhoneNumber, "==>", newPhoneNumber)
-                    print ("                 Are your sure about that changes?")
-                    n = ' \n'
-                    if (answerUserYesOrNo() == 'Y'):
-                        phoneBook[phoneBook.index(i)] = ([str(editID), newSurName, newFirstName, newSecondName, newPhoneNumber, str(n)])
-                        writeData(source, phoneBook)    
-                    else:
-                        print ("Edit not saved")
+    while my_choice != 0:
+        print("Выберите одно из действий:")
+        print("1 - Вывести инфо на экран")
+        print("2 - Произвести экпорт данных")
+        print("3 - Произвести изменение данных")
+        print("4 - Произвести удаление данных")
+        print("0 - Выход из программы")
+        action = int(input("Действие: "))
+        if action == 1:
+            show_data(file_tel)
+        elif action == 2:
+            export_data(file_tel)
+        elif action == 3:
+            edit_data(file_tel)
+        elif action == 4:
+            delete_data(file_tel)
         else:
-            print ("Edit canceled")          
-    return flag
+            my_choice = 0
 
+    print("До свидания")
 
-def deletePerson ():
-    phoneBook = readData(source)
-    print ("Delete data:")
-    flag = selectSomethingReadPhoneNumber ()
-    if (flag == True):
-        print ("Do you want to change the details of a person?")
-        if (answerUserYesOrNo() == 'Y'): 
-            print ("Enter ID to edit person:") 
-            editID = int(answerUserNumberIndex(phoneBook))
-            for i in phoneBook:
-                if (editID == int(i[0])):
-                    print ("ATTENTION! DELETE PERSON MOD: ON")
-                    print ("ID              :", i[0], "==> DELETE")
-                    print ("SURNAME         :", i[1], "==> DELETE")
-                    print ("FIRST_NAME      :", i[2], "==> DELETE")
-                    print ("SECOND_NAME     :", i[3], "==> DELETE")
-                    print ("TELEPHONE_NUMBER:", i[4], "==> DELETE")
-                    print ("                 Are your sure about that changes?")
-                    if (answerUserYesOrNo() == 'Y'):
-                        phoneBook.pop(phoneBook.index(i))
-                        writeData(source, phoneBook)   
-                    else:
-                        print ("Delete not save")
-        else:
-            print ("Delete canceled")
-    return flag   
-
-# Обработка ответа пользователя Yes/No на бесконечке
-def answerUserYesOrNo():
-    while True:
-        answer = str.upper(input("[Y]es or [N]o :"))
-        try:
-            if (answer == 'Y') or (answer == 'N'):
-                return answer
-            else:
-                print("Your entered no [Y] or [N]. Try again") 
-        except:
-            print ("You entered something, but it's not number")
-
-# Обработка ответа пользователя Number на бесконечке
-def answerUserNumberIndex(phoneBook):
-    maxID = 0
-    for i in phoneBook:
-        if (maxID < int(i[0])):
-            maxID = int(i[0])
-    while True:
-        enteredNum = int(input())
-        try:
-            if (enteredNum > 0) and (enteredNum <= maxID):
-                return enteredNum              
-            else:
-                print("Your number out of range. Try again") 
-        except:
-            print ("You entered something, but it's not number")
-
-# SYSTEM MESSAGES
-def systemMessage(numberMSG):
-    if (numberMSG == 2):
-        print ("Found person finished")
-    elif (numberMSG == 3):
-        print ("Data succefull added and saved")
-    elif (numberMSG == 4):
-        print ("Data succefull edited and saved")
-    elif (numberMSG == 5):
-        print ("Data succefull deleted. Changes saved")
-    elif (numberMSG == 0):
-        print ("GOODBYE! COME AGAIN!")
-    else:
-        print ("Something ERROR. Please contact the developers")
-
-
-clear = lambda: os.system ('cls')
-clear()
-
-print ('''HELLO, USER 
-        \n [1] -- press for SHOW ALL 
-        \n [2] -- press for SELECT 
-        \n [3] -- press for ADD DATA''')
-        \n [2] -- press for SELECT
-        \n [3] -- press for ADD DATA
-        \n [4] -- press for EDIT DATA
-        \n [5] -- press for DELETE DATA
-        \n [0] -- press for EXIT
-        ''')
-while True:
-
-    enteredNum = int(input())
-    # try:
-    if (enteredNum == 1):
-        selectAllReadPhoneNumber()
-    elif (enteredNum == 2):
-        selectSomethingReadPhoneNumber()
-        phoneBook = readData('C:/1Stud_GB/PythonLessons/L8/phonebook.txt')
-        phoneBook.append(['5', 'H', 'R', 'T', '123\n'])
-        writeData ('C:/1Stud_GB/PythonLessons/L8/phonebook.txt', phoneBook)
-    elif (enteredNum == 3):
-        addPerson () 
-    else:
-        print("Your number out of range. Try again")
-        break
-    # except:
-    # print ("You entered something, but it's not number")
-    try:
-        if (enteredNum == 1):
-            selectAllReadPhoneNumber()
-        elif (enteredNum == 2):
-            flag = selectSomethingReadPhoneNumber()
-            if (flag == True):
-                systemMessage(enteredNum)
-            else:
-                print ("Sorry, not found")
-        elif (enteredNum == 3):
-            addPerson () 
-        elif (enteredNum == 4):
-            flag = editPerson ()
-            if (flag != True):
-                print ("Sorry, not found")
-        elif (enteredNum == 5):
-            flag = deletePerson ()
-            if (flag != True):
-                print ("Sorry, not found")
-        elif (enteredNum == 0):
-            systemMessage(enteredNum)
-            break                
-        else:
-            print("Your number out of range. Try again")
-
-    except:
-        print ("You entered something, but it's not number")
+if __name__ == "__main__":
+    main()
